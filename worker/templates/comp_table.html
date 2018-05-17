@@ -1,0 +1,67 @@
+{% macro div_table(view_competencies, added_competencies, div_name='competencies_table') %}
+<div id="{{ div_name }}">
+    {{ table(view_competencies, added_competencies) }}
+</div>
+{% endmacro %}
+
+{% macro table(view_competencies, added_competencies, active=true) %}
+{% if view_competencies %}
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Компетенция</th>
+            <th>Индикаторы компетенции</th>
+            {% if active %}
+            <th></th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+{% set added_competencies = added_competencies | to_set %}
+{% for competency in view_competencies %}
+        <tr>
+            <td><a href="{{ url_for('competency_page.competency', comp_id=competency.id) }}">{{ competency.name }}</a></td>
+            <td>
+            <ul style="list-style-position: inside; padding-left: 0;">
+                {% for indicator in competency.indicators %}
+                    <li>{{ indicator }}</li>
+                {% endfor %}
+            </ul>
+            </td>
+            {% if active %}
+            <td>
+                {% if added_competencies is none or competency.id in added_competencies %}
+                    <button class="btn btn-default" type="button" onclick="change_competency('remove', {{ competency.id }})">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        <span><strong>Удалить</strong></span>
+                    </button>
+                {% else %}
+                    <button class="btn btn-default" type="button" onclick="change_competency('append', {{ competency.id }})">
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        <span><strong>Добавить</strong></span>
+                    </button>
+                {% endif %}
+            </td>
+            {% endif %}
+        </tr>
+{% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Выбранные компетенции отсутствуют</p>
+{% endif %}
+{% endmacro %}
+
+{% macro table_changed(div_name='competencies_table') %}
+<script>
+    function change_competency(type, comp_id) {
+        $.ajax({
+            method: 'POST',
+            url: '{{ request.path }}/change_competency',
+            data: {type: type, comp_id: comp_id}
+        }).done(function(data){
+            $('#{{ div_name }}').html(data.table);
+        });
+    }
+</script>
+{% endmacro %}

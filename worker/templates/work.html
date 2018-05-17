@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% import 'comp_table.html' as macro %}
+
+{% block title %}
+    Вакансия &mdash; {{ work.description }}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h3>Вакансия &mdash; {{ work.description }}</h3>
+
+        <p><b>Зарплата:</b> {{ work.salary }}₽</p>
+        <p><b>Работодатель:</b> <a href="{{ url_for('employer_page.employer', employer_id=work.employer.id) }}">{{ work.employer.name }}</a></p>
+
+        <h4>Требуемые для вакансии компетенции</h4>
+        {{ macro.div_table(work.competencies, user.competencies) }}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    {{ macro.table_changed() }}
+{% endblock %}

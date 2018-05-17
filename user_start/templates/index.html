@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Система управления компетенциями
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="panel panel-success ">
+                    <div class="panel-heading"><h3 class="text-center">Соискатель</h3></div>
+
+                    <ul class="list-group list-group-item-success h4">
+                        <li class="list-group-item">Управление своими компетенциями</li>
+                        <li class="list-group-item">Поиск подходящей вам работы</li>
+                        <li class="list-group-item">Рекомендации по изучению компетенций</li>
+                    </ul>
+
+                    <div class="panel-heading text-center">
+                        <a href="http://127.0.0.1:5003" class="btn btn-lg btn-success">
+                            <strong>Зарегистрироваться как соискатель</strong>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="panel panel-info">
+                    <div class="panel-heading"><h3 class="text-center">Работодатель</h3></div>
+
+                    <ul class="list-group list-group-item-info h4">
+                        <li class="list-group-item">Создание вакансий</li>
+                        <li class="list-group-item">Управление компетенциями вакансий</li>
+                        <li class="list-group-item">Поиск подходящих для вакансии работников</li>
+                    </ul>
+
+                    <div class="panel-heading text-center">
+                        <a href="http://127.0.0.1:5005" class="btn btn-info btn btn-lg">
+                            <strong>Зарегистрироваться как работодатель</strong>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

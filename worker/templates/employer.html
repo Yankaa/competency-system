@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% import 'works_table.html' as macro %}
+
+{% block title %}
+    Работодатель &mdash; {{ employer.name }}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h3>{{ employer.name }}</h3>
+        <p>{{ employer.description }}</p>
+        <h4>Вакансии</h4>
+        {{ macro.table(works) }}
+    </div>
+{% endblock %}

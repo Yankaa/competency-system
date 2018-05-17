@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% import 'comp_table.html' as macro %}
+
+{% block title %}
+    Рекомендуемые к изучению компетенции
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h3>Рекомендуемые к изучению компетенции</h3>
+        {{ macro.div_table(demanded_competencies, user.competencies) }}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    {{ macro.table_changed() }}
+{% endblock %}

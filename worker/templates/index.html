@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% import 'comp_table.html' as macro %}
+
+{% block title %}
+    Система управления компетенциями
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2>Здравствуй, {{ user.name }}!</h2>
+
+        <div class="btn-group-vertical">
+            <a href="{{ url_for('manage_competencies_page.manage_competencies') }}" class="btn btn-default">
+                <strong>Выбрать мои компетенции</strong>
+            </a>
+            <a href="{{ url_for('best_works_page.best_works') }}" class="btn btn-default">
+                <strong>Найти наиболее подходящие вакансии</strong>
+            </a>
+            <a href="{{ url_for('demanded_competencies_page.demanded_competencies') }}" class="btn btn-default">
+                <strong>Получить рекомендации к изучению компетенций</strong>
+            </a>
+        </div>
+
+        <h3>Ваши компетенции</h3>
+        {{ macro.table(user.competencies, none, false) }}
+
+    </div>
+{% endblock %}

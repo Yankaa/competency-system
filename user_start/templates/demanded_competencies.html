@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Самые востребованные компетенции
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h3>Самые востребованные компетенции</h3>
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Компетенция</th>
+                    <th>Индикаторы компетенции</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for competency in competencies %}
+                <tr>
+                    <td>{{ competency.name }}</td>
+                    <td>
+                        <ul style="list-style-position: inside; padding-left: 0;">
+                        {% for indicator in competency.indicators %}
+                            <li>{{ indicator }}</li>
+                        {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

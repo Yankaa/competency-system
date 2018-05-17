@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% import 'works_table.html' as macro %}
+
+{% block title %}
+    Подходящие вакансии
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h3>Наиболее подходящие вакансии</h3>
+        <div>
+            {{ macro.table(best_works) }}
+        </div>
+    </div>
+{% endblock %}
