@@ -54,7 +54,7 @@ def list_works() -> List[Work]:
 
 
 def add_worker(name: str, competencies: List[int]) -> Worker:
-    worker = Worker(name=name, competencies=competencies)
+    worker = Worker(name=name, competencies=competencies or [])
     db.session.add(worker)
     db.session.commit()
     return worker

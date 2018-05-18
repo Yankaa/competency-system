@@ -1,5 +1,6 @@
 from typing import List
 import requests
+from security import get_current_user_id
 
 
 class Caller:
@@ -10,10 +11,10 @@ class Caller:
         return requests.get(self.address + address, params=params).json()
 
     def put(self, address: str, args):
-        requests.put(self.address + address, json=args)
+        return requests.put(self.address + address, json=args).json()
 
     def post(self, address: str, args):
-        requests.post(self.address + address, json=args)
+        return requests.post(self.address + address, json=args).json()
 
 
 competency_manager = Caller('http://127.0.0.1:5001')
@@ -37,14 +38,14 @@ def get_employer_info(employer_id: int):
     return labor_manager.get('/employers/%d' % employer_id)
 
 
-def get_current_user_id():
-    return 2
-
-
 def get_current_user():
-    user = get_worker_info(get_current_user_id())
-    user['is_anonymous'] = False
-    return user
+    return get_worker_info(get_current_user_id())
+
+
+def add_worker(name: str) -> int:
+    worker = labor_manager.post('/workers', {'name': name})
+    print(worker)
+    return worker['id']
 
 
 def remove_comp_from_worker(worker_id: int, comp_id: int):

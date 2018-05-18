@@ -17,12 +17,8 @@
                 <ul class="nav navbar-nav">
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    {% if user.is_anonymous %}
-                        <li><a href="#">Вход</a></li>
-                    {% else %}
-                        <li><a href="#">Профиль</a></li>
-                        <li><a href="#">Выход</a></li>
-                    {% endif %}
+                    <li><a href="{{ url_for('main_page.index') }}">Профиль</a></li>
+                    <li><a href="{{ url_for('main_page.logout') }}">Выход</a></li>
                 </ul>
             </div>
         </div>

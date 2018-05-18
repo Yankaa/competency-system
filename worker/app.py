@@ -1,5 +1,7 @@
 from flask import Flask
 from flask_bootstrap import Bootstrap
+from flask_mail import Mail
+from flask_babelex import Babel
 from blueprints.competency import competency_page
 from blueprints.work import work_page
 from blueprints.employer import employer_page
@@ -7,9 +9,14 @@ from blueprints.main import main_page
 from blueprints.manage_competencies import manage_competencies_page
 from blueprints.demanded_competencies import demanded_competencies_page
 from blueprints.best_works import best_works_page
+import security
 
 app = Flask(__name__)
+app.config.from_pyfile('config.py')
+babel = Babel(app)
 bootstrap = Bootstrap(app)
+security.configure(app)
+mail = Mail(app)
 
 app.register_blueprint(competency_page)
 app.register_blueprint(work_page)
