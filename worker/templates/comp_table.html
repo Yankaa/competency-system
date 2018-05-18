@@ -17,8 +17,8 @@
         </tr>
     </thead>
     <tbody>
-{% set added_competencies = added_competencies | to_set %}
-{% for competency in view_competencies %}
+        {% set added_competencies = added_competencies | to_set %}
+        {% for competency in view_competencies %}
         <tr>
             <td><a href="{{ url_for('competency_page.competency', comp_id=competency.id) }}">{{ competency.name }}</a></td>
             <td>

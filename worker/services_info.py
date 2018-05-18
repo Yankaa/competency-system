@@ -79,6 +79,10 @@ def get_areas():
     return competency_manager.get('/areas')
 
 
+def get_area_profs(area_id: int) -> List:
+    return competency_manager.get('/professions', params={'area': area_id})
+
+
 def get_best_works(worker_id: int) -> List:
     return list(map(_load_competencies, labor_manager.get('/best_works/%d' % worker_id)))
 

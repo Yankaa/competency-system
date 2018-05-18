@@ -1,0 +1,8 @@
+{% macro profession_select(professions, disabled=false) %}
+<select id="prof-selector" class="form-control" {% if disabled %}disabled{% endif %}>
+    <option value="0">{% if disabled %}Выберите профессиональную область{% else %}Выберите профессию{% endif %}</option>
+    {% for profession in professions %}
+    <option value="{{ profession.id }}">{{ profession.name }}</option>
+    {% endfor %}
+</select>
+{% endmacro %}

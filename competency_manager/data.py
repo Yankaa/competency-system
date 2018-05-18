@@ -92,7 +92,9 @@ def list_competencies(args=None) -> List[Competency]:
     return Competency.query.all()
 
 
-def list_professions() -> List[Profession]:
+def list_professions(area_id: int=None) -> List[Profession]:
+    if area_id:
+        return Profession.query.filter(Profession.area_id == area_id).all()
     return Profession.query.all()
 
 

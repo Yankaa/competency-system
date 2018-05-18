@@ -18,7 +18,7 @@ api.add_resource(Competency, '/competencies/<int:comp_id>')
 api.add_resource(ProfessionList, '/professions')
 api.add_resource(Profession, '/professions/<int:prof_id>')
 api.add_resource(AreaList, '/areas')
-api.add_resource(Area, '/areas/<int:comp_id>')
+api.add_resource(Area, '/areas/<int:area_id>')
 
 
 if __name__ == '__main__':

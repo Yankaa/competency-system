@@ -20,6 +20,8 @@ app.register_blueprint(demanded_competencies_page)
 app.register_blueprint(best_works_page)
 
 
+# в comp_table.html требуется проверять наличие элементов в списке
+# этот метод преобразует список в словарь, чтобы такие проверки можно было делать эффективно
 @app.template_filter('to_set')
 def to_set_filter(competencies):
     if competencies is None:
