@@ -12,14 +12,19 @@ def manage_competencies():
     return render_template("manage_competencies.html", user=get_current_user(), professions=get_professions(), areas=get_areas())
 
 
+def get_found_comps():
+    form = request.form
+    prof_id = form.get('prof_id', 0, type=int)
+    area_id = form.get('area_id', 0, type=int)
+    description = form.get('description', None, type=str)
+    return get_competencies(area_id, prof_id, description)
+
+
 @manage_competencies_page.route('/change_competency', methods=['POST'])
 @login_required
 def change_competency():
     change_competency_func()
-    form = request.form
-    prof_id = form.get('prof_id', 0, type=int)
-    area_id = form.get('area_id', 0, type=int)
-    found_comps = get_competencies(area_id, prof_id)
+    found_comps = get_found_comps()
     user_comps = get_current_user()['competencies']
     return jsonify(
         found_comp_table=render_table(found_comps, user_comps),
@@ -35,12 +40,10 @@ _option_template = "{% import 'profession_select.html' as macro %}{{ macro.profe
 def get_prof_comps():
     form = request.form
     area_id = form.get('area_id', 0, type=int)
-    prof_id = form.get('prof_id', 0, type=int)
-    description = form.get('description', None, type=str)
     update_prof = form.get('update_prof', False, type=bool)
 
     user_comps = get_current_user()['competencies']
-    found_comp_table = render_table(get_competencies(area_id, prof_id, description), user_comps)
+    found_comp_table = render_table(get_found_comps(), user_comps)
 
     if update_prof:
         return jsonify(
