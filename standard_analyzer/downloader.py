@@ -2,22 +2,23 @@ from urllib.request import urlopen
 from urllib.parse import urlencode
 from re import findall
 from time import sleep
-from os.path import exists
 from typing import List
+import paths
 
 url = 'http://profstandart.rosmintrud.ru/obshchiy-informatsionnyy-blok/natsionalnyy-reestr-professionalnykh-standartov/' \
       'reestr-professionalnykh-standartov/'
 url_pages = url + '?PAGEN_1='
 url_standards = url + 'wservGenXMLSave.php'
 pattern = br'''onclick="downloadXml\('(\d+)'\);"'''
-page_count = 53
+page_count = 55
 fresh_standards = []
 
 
 def get_standard(standard_id: str):
-    filename = 'downloaded/' + standard_id + '.txt'
+    file = paths.downloaded(standard_id)
+
     # проверка, не был ли данный стандарт скачан ранее
-    if exists(filename):
+    if file.exists():
         return
 
     fresh_standards.append(standard_id)
@@ -27,9 +28,7 @@ def get_standard(standard_id: str):
     data = response.read()
     response.close()
 
-    file = open(filename, 'wb')
-    file.write(data)
-    file.close()
+    file.write(data, 'wb')
 
 
 def get_list(page: int):

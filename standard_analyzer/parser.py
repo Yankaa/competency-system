@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as Et
 from typing import List, Tuple
+import paths
 
 LaborActions = List[str]
 RequiredSkills = List[str]
@@ -31,7 +32,7 @@ def children_list(el: Et.Element, tag) -> List[Et.Element]:
 
 
 def parse_professional_standard(standard_id: str) -> Standard:
-    node: Et.Element = Et.parse('downloaded/' + standard_id + '.txt').getroot()
+    node: Et.Element = Et.parse(paths.downloaded(standard_id).path).getroot()
     assert node.tag == 'XMLCardInfo'
 
     node = child(node, 'ProfessionalStandarts')
@@ -68,7 +69,7 @@ def parse_professional_standard(standard_id: str) -> Standard:
 
             gwf[1].append(pwf)
 
-        standard[1].append(gwf)
+        standard[2].append(gwf)
 
     return standard
 
@@ -76,7 +77,4 @@ def parse_professional_standard(standard_id: str) -> Standard:
 def convert(standards: List[str]):
     for standard_id in standards:
         standard = parse_professional_standard(standard_id)
-        filename = 'parsed/' + standard_id + '.txt'
-        file = open(filename, 'w')
-        file.write(repr(standard))
-        file.close()
+        paths.parsed(standard_id).write(repr(standard))

@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 
 @app.route('/update')
-def hello_world():
+def update():
     fresh_standards = downloader.update()
     parser.convert(fresh_standards)
     analyzer.analyze(fresh_standards)

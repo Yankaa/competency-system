@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from typing import List
+import semantic
 
 db = SQLAlchemy()
 
@@ -7,6 +8,7 @@ db = SQLAlchemy()
 class Competency(db.Model):
     id: int = db.Column(db.Integer, primary_key=True)
     name: str = db.Column(db.String, nullable=False)
+    vector = db.Column(db.PickleType)
     indicators: str = db.Column(db.String, nullable=False)
 
 
@@ -30,14 +32,16 @@ class Profession(db.Model):
 
 
 def add_competency(name: str, indicators: List[str]) -> Competency:
-    competency = Competency(name=name, indicators='\n'.join(indicators))
+    vector = semantic.strings_list_to_vec(indicators)
+    competency = Competency(name=name, vector=vector, indicators='\n'.join(indicators))
     db.session.add(competency)
     db.session.commit()
     return competency
 
 
-def add_profession(name: str, area: Area, competencies: List[Competency]):
-    profession = Profession(name=name, area=area, competencies=competencies)
+def add_profession(name: str, area_id: int, competencies_id: List[int]):
+    competencies = [get_competency(comp_id) for comp_id in competencies_id]
+    profession = Profession(name=name, area_id=area_id, competencies=competencies)
     db.session.add(profession)
     db.session.commit()
     return profession
@@ -84,12 +88,25 @@ def change_area(area_id: int, name: str) -> Area:
 
 
 def list_competencies(args=None) -> List[Competency]:
-    if args:
-        if args.profession:
-            return list(Profession.query.get_or_404(args.profession).competencies)
-        if args.area:
-            return Competency.query.join((Profession, Competency.professions)).filter(Profession.area_id == args.area).all()
-    return Competency.query.all()
+    if args is None:
+        return Competency.query.all()[:10]
+
+    if args.profession:
+        competencies = list(Profession.query.get_or_404(args.profession).competencies)
+    elif args.area:
+        competencies = Competency.query.join((Profession, Competency.professions)).filter(Profession.area_id == args.area).all()
+    else:
+        competencies = Competency.query.all()
+
+    if args.description:
+        vec = semantic.strings_list_to_vec([args.description])
+        competency_similarities = []
+        for competency in competencies:
+            competency_similarities.append((semantic.similarity(competency.vector, vec), competency))
+        competency_similarities.sort(key=lambda pair: pair[0], reverse=True)
+        competencies = [pair[1] for pair in competency_similarities]
+
+    return competencies[:10]
 
 
 def list_professions(area_id: int=None) -> List[Profession]:

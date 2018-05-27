@@ -2,6 +2,7 @@ from typing import List
 from ast import literal_eval
 from parser import Standard
 from web import add_competency, add_profession, add_area
+import paths
 
 
 def analyze_standard(standard: Standard):
@@ -20,9 +21,6 @@ def analyze_standard(standard: Standard):
 
 def analyze(fresh_standards: List[str]):
     for standard_id in fresh_standards:
-        filename = 'parsed/' + standard_id + '.txt'
-        file = open(filename, 'r')
-        content = file.read()
-        file.close()
+        content = paths.parsed(standard_id).read()
         standard: Standard = literal_eval(content)
         analyze_standard(standard)

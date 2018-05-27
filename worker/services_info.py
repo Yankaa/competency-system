@@ -68,8 +68,8 @@ def get_profession(prof_id: int):
     return competency_manager.get('/professions/%d' % prof_id)
 
 
-def get_competencies(area_id: int, prof_id: int):
-    return competency_manager.get('/competencies', {'area': area_id, 'profession': prof_id})
+def get_competencies(area_id: int, prof_id: int, description: str):
+    return competency_manager.get('/competencies', {'area': area_id, 'profession': prof_id, 'description': description})
 
 
 def get_competency(comp_id: int):

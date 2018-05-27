@@ -24,6 +24,9 @@
         <div class="form-group">
             <textarea id="comp-text" class="form-control" placeholder="Введите описание компетенции своими словами"></textarea>
         </div>
+        <div class="form-group">
+            <button id="search-button" class="btn btn-default" type="button" onclick="on_prof_selector_change()">Поиск</button>
+        </div>
 
         {{ comp_table.div_table([], none, 'found_comp_table') }}
 
@@ -37,16 +40,17 @@
         $('#area-selector').change(on_area_selector_change).change();
 
         function on_prof_selector_change() {
-            let data = {prof_id: $('#prof-selector').val(), area_id: $('#area-selector').val()};
+            let data = {prof_id: $('#prof-selector').val(), area_id: $('#area-selector').val(), description: $('#comp-text').val()};
             ajax_update_tables(data);
         }
 
         function on_area_selector_change() {
-            let data = {area_id: $('#area-selector').val(), update_prof: true};
+            let data = {area_id: $('#area-selector').val(), update_prof: true, description: $('#comp-text').val()};
             ajax_update_tables(data);
         }
 
         function ajax_update_tables(data) {
+            $('#search-button').prop("disabled", true);
             $.ajax({
                 method: 'POST',
                 url: {{ url_for('manage_competencies_page.get_prof_comps')|tojson }},
@@ -63,6 +67,7 @@
                 $('#prof-selector-div').html(data.prof_select);
                 $('#prof-selector').change(on_prof_selector_change);
             }
+            $('#search-button').prop("disabled", false);
         }
 
         function change_competency(type, comp_id) {

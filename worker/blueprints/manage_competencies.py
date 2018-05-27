@@ -36,10 +36,11 @@ def get_prof_comps():
     form = request.form
     area_id = form.get('area_id', 0, type=int)
     prof_id = form.get('prof_id', 0, type=int)
+    description = form.get('description', None, type=str)
     update_prof = form.get('update_prof', False, type=bool)
 
     user_comps = get_current_user()['competencies']
-    found_comp_table = render_table(get_competencies(area_id, prof_id), user_comps)
+    found_comp_table = render_table(get_competencies(area_id, prof_id, description), user_comps)
 
     if update_prof:
         return jsonify(
