@@ -26,8 +26,8 @@ class Work(db.Model):
     employer = db.relationship('Employer', backref=db.backref('works', lazy=True))
 
 
-def add_work(description: str, salary: int, employer: int, competencies: List[int]) -> Work:
-    work = Work(description=description, salary=salary, employer_id=employer, competencies=competencies)
+def add_work(description: str, salary: int, employer_id: int, competencies: List[int]) -> Work:
+    work = Work(description=description, salary=salary, employer_id=employer_id, competencies=competencies)
     db.session.add(work)
     db.session.commit()
     return work
@@ -38,13 +38,13 @@ def get_work(work_id: int) -> Work:
 
 
 def change_work(work_id: int, description: str = None, salary: int = None, competencies: List[int] = None) -> Work:
-    work = Work.query.get_work(work_id)
+    work = Work.query.get_or_404(work_id)
     if description is not None:
         work.description = description
-    if competencies is not None:
-        work.competencies = competencies
     if salary is not None:
         work.salary = salary
+    if competencies is not None:
+        work.competencies = [] if competencies == [-1] else competencies  # hack for requests
     db.session.commit()
     return work
 

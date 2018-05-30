@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% import 'comp_table.html' as macro %}
+
+{% block title %}
+    Система управления компетенциями
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2>Соискатель {{ user.name }}!</h2>
+
+        <h3>Компетенции соискателя</h3>
+        {% if work %}
+            {{ macro.div_table(user.competencies, work.competencies, work_id=work.id) }}
+        {% else %}
+            {{ macro.table(user.competencies, none, false) }}
+        {% endif %}
+
+    </div>
+{% endblock %}
+
+{% if work %}
+{% block scripts %}
+    {{ super() }}
+    {{ macro.table_changed(work.id) }}
+{% endblock %}
+{% endif %}

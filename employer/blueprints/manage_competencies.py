@@ -1,0 +1,54 @@
+from flask import Blueprint, render_template, jsonify, request, render_template_string
+from services_info import get_current_user, get_professions, get_competencies, get_areas, get_area_profs, get_work_info
+from .competency_table import render_table, change_competency_func, get_current_work
+from flask_security import login_required
+
+manage_competencies_page = Blueprint('manage_competencies_page', __name__, template_folder='templates')
+
+
+@manage_competencies_page.route('/manage_competencies/<int:work_id>')
+@login_required
+def manage_competencies(work_id: int):
+    return render_template("manage_competencies.html", user=get_current_user(), work=get_work_info(work_id),
+                           professions=get_professions(), areas=get_areas())
+
+
+def get_found_comps():
+    form = request.form
+    prof_id = form.get('prof_id', 0, type=int)
+    area_id = form.get('area_id', 0, type=int)
+    description = form.get('description', None, type=str)
+    return get_competencies(area_id, prof_id, description)
+
+
+@manage_competencies_page.route('/change_competency', methods=['POST'])
+@login_required
+def change_competency():
+    change_competency_func()
+    found_comps = get_found_comps()
+    work = get_current_work()
+    return jsonify(
+        found_comp_table=render_table(found_comps, work),
+        user_comp_table=render_table(None, work)
+    )
+
+
+_option_template = "{% import 'profession_select.html' as macro %}{{ macro.profession_select(professions, disabled) }}"
+
+
+@manage_competencies_page.route('/get_prof_comps', methods=['POST'])
+@login_required
+def get_prof_comps():
+    form = request.form
+    area_id = form.get('area_id', 0, type=int)
+    update_prof = form.get('update_prof', False, type=bool)
+
+    found_comp_table = render_table(get_found_comps(), get_current_work())
+
+    if update_prof:
+        return jsonify(
+            found_comp_table=found_comp_table,
+            prof_select=render_template_string(_option_template, professions=get_area_profs(area_id), disabled=area_id == 0)
+        )
+    else:
+        return jsonify(found_comp_table=found_comp_table)

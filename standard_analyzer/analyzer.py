@@ -1,5 +1,4 @@
 from typing import List
-from ast import literal_eval
 from parser import Standard
 from web import add_competency, add_profession, add_area
 import paths
@@ -21,6 +20,5 @@ def analyze_standard(standard: Standard):
 
 def analyze(fresh_standards: List[str]):
     for standard_id in fresh_standards:
-        content = paths.parsed(standard_id).read()
-        standard: Standard = literal_eval(content)
+        standard: Standard = paths.parsed(standard_id).read_object()
         analyze_standard(standard)

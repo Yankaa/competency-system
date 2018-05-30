@@ -32,7 +32,7 @@ class Profession(db.Model):
 
 
 def add_competency(name: str, indicators: List[str]) -> Competency:
-    vector = semantic.strings_list_to_vec(indicators)
+    vector = semantic.text_to_vec(indicators)
     competency = Competency(name=name, vector=vector, indicators='\n'.join(indicators))
     db.session.add(competency)
     db.session.commit()
@@ -99,7 +99,7 @@ def list_competencies(args=None) -> List[Competency]:
         competencies = Competency.query.all()
 
     if args.description:
-        vec = semantic.strings_list_to_vec([args.description])
+        vec = semantic.text_to_vec(args.description)
         competency_similarities = []
         for competency in competencies:
             competency_similarities.append((semantic.similarity(competency.vector, vec), competency))

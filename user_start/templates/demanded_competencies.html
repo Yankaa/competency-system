@@ -20,7 +20,7 @@
                     <td>{{ competency.name }}</td>
                     <td>
                         <ul style="list-style-position: inside; padding-left: 0;">
-                        {% for indicator in competency.indicators %}
+                        {% for indicator in competency.indicators[:3] %}
                             <li>{{ indicator }}</li>
                         {% endfor %}
                         </ul>

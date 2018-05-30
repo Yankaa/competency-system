@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% import 'comp_table.html' as comp_table %}
+{% import 'profession_select.html' as prof_select %}
+
+{% block title %}
+    Система управления компетенциями
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3>Выбранные для вакансии компетенции</h3>
+    {{ comp_table.div_table(work.competencies, none, 'user_comp_table', work_id=work.id) }}
+
+    <h3>Поиск компетенций</h3>
+    <div class="form-group">
+        <select id="area-selector" class="form-control">
+            <option value="0">Выберите профессиональную область</option>
+            {% for area in areas %}
+                <option value="{{ area.id }}">{{ area.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div id="prof-selector-div" class="form-group"></div>
+    <div class="form-group">
+        <textarea id="comp-text" class="form-control" placeholder="Введите описание компетенции своими словами"></textarea>
+    </div>
+    <div class="form-group">
+        <button id="search-button" class="btn btn-default" type="button" onclick="on_prof_selector_change()">Поиск</button>
+    </div>
+
+    {{ comp_table.div_table([], none, 'found_comp_table', work.id) }}
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script type=text/javascript>
+    $('#prof-selector').change(on_prof_selector_change);
+    $('#area-selector').change(on_area_selector_change).change();
+
+    function on_prof_selector_change() {
+        ajax_update_tables({prof_id: $('#prof-selector').val()});
+    }
+
+    function on_area_selector_change() {
+        ajax_update_tables({update_prof: true});
+    }
+
+    function ajax_update_tables(data) {
+        data.area_id = $('#area-selector').val();
+        data.description = $('#comp-text').val();
+        data.work_id = {{ work.id }};
+        $('#search-button').prop("disabled", true);
+        $.ajax({
+            method: 'POST',
+            url: {{ url_for('manage_competencies_page.get_prof_comps')|tojson }},
+            data: data
+        }).done(update_tables);
+    }
+
+    function update_tables(data) {
+        $('#found_comp_table').html(data.found_comp_table);
+        if (data.hasOwnProperty('user_comp_table')) {
+            $('#user_comp_table').html(data.user_comp_table);
+        }
+        if (data.hasOwnProperty('prof_select')) {
+            $('#prof-selector-div').html(data.prof_select);
+            $('#prof-selector').change(on_prof_selector_change);
+        }
+        $('#search-button').prop("disabled", false);
+    }
+
+    function change_competency(type, comp_id) {
+        $('#search-button').prop("disabled", true);
+        $.ajax({
+            method: 'POST',
+            url: {{ url_for('manage_competencies_page.change_competency')|tojson }},
+            data: {type: type, comp_id: comp_id, work_id: {{ work.id }},
+                prof_id: $('#prof-selector').val(), area_id: $('#area-selector').val()}
+        }).done(update_tables);
+    }
+</script>
+{% endblock %}

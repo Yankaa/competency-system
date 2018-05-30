@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% import 'works_table.html' as macro %}
+
+{% block title %}
+    Подходящие соискатели
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h3>Наиболее подходящие соискатели</h3>
+        <div>
+            {% if best_workers %}
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Имя</th>
+                        <th>Изученные компетенции</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for worker in best_workers %}
+                    <tr>
+                        <td><a href="{{ url_for('worker_page.worker', worker_id=worker.id, work=work_id) }}">{{ worker.name }}</a></td>
+                        <td>
+                            <ul style="list-style-position: inside; padding-left: 0;">
+                            {% for competency in worker.competencies %}
+                                <li><a href="{{ url_for('competency_page.competency', comp_id=competency.id, work=work_id) }}">{{ competency.name }}</a></li>
+                            {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>Соискатели отсутствуют</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Компетенция &mdash; {{ competency.name }}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h3>Компетенция &mdash; {{ competency.name }}</h3>
+
+        <ul>
+        {% for indicator in competency.indicators %}
+            <li>{{ indicator }}</li>
+        {% endfor %}
+        </ul>
+
+        {% if work %}
+        {% set added = (competency.id in work.competencies) %}
+
+        <div id="is_added" {% if not added %} style="display:none;" {% endif %}>
+            <p>Вакансия <a href="{{ url_for('work_page.work', work_id=work.id) }}">{{ work.description }}</a> требует данную компетенцию</p>
+            <button class="btn btn-default" type="button" onclick="change_competency('remove', {{ competency.id }})">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                <span><strong>Удалить</strong></span>
+            </button>
+        </div>
+        <div id="is_not_added" {% if added %} style="display:none;" {% endif %}>
+            <p>Вакансия <a href="{{ url_for('work_page.work', work_id=work.id) }}">{{ work.description }}</a> не требует данную компетенцию</p>
+            <button class="btn btn-default" type="button" onclick="change_competency('append', {{ competency.id }})">
+                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                <span><strong>Добавить</strong></span>
+            </button>
+        </div>
+        {% endif %}
+
+    </div>
+{% endblock %}
+
+
+{% if work %}
+{% block scripts %}
+    {{ super() }}
+    <script type=text/javascript>
+        function change_competency(type, comp_id) {
+            $.ajax({
+                method: 'POST',
+                url: {{ url_for('competency_page.change_competency_1')|tojson }},
+                data: {type: type, comp_id: comp_id, work_id: {{ work.id }}}
+            }).done(function(data) {
+                let is_added = data.is_added;
+                $('#is_added').toggle(is_added);
+                $('#is_not_added').toggle(!is_added);
+            });
+        }
+    </script>
+{% endblock %}
+{% endif %}

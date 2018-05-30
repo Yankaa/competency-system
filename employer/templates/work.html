@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% import 'comp_table.html' as macro %}
+
+{% block title %}
+    Вакансия &mdash; {{ work.description }}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h3>Вакансия &mdash; {{ work.description }}</h3>
+
+        <p><b>Зарплата:</b> {{ work.salary }}₽</p>
+
+        <div class="btn-group-vertical">
+            <a href="{{ url_for('manage_competencies_page.manage_competencies', work_id=work.id) }}" class="btn btn-default">
+                <strong>Выбрать компетенции для вакансии</strong>
+            </a>
+            <a href="{{ url_for('best_workers_page.best_workers', work_id=work.id) }}" class="btn btn-default">
+                <strong>Найти наиболее подходящих соискателей</strong>
+            </a>
+        </div>
+
+        <h4>Требуемые для вакансии компетенции</h4>
+        {{ macro.table(work.competencies, none, false, work.id) }}
+    </div>
+{% endblock %}

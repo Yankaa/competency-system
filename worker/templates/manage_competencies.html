@@ -71,6 +71,7 @@
         }
 
         function change_competency(type, comp_id) {
+            $('#search-button').prop("disabled", true);
             $.ajax({
                 method: 'POST',
                 url: {{ url_for('manage_competencies_page.change_competency')|tojson }},

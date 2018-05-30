@@ -77,4 +77,4 @@ def parse_professional_standard(standard_id: str) -> Standard:
 def convert(standards: List[str]):
     for standard_id in standards:
         standard = parse_professional_standard(standard_id)
-        paths.parsed(standard_id).write(repr(standard))
+        paths.parsed(standard_id).write_object(standard)

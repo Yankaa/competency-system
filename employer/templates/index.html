@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% import 'works_table.html' as macro %}
+
+{% block title %}
+    Система управления компетенциями
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2>Здравствуй, {{ user.name }}!</h2>
+
+        <a href="{{ url_for('add_work_page.add_work') }}" class="btn btn-default">
+            <strong>Создать новую вакансию</strong>
+        </a>
+
+        <h3>Ваши вакансии</h3>
+        {{ macro.table(works) }}
+
+    </div>
+{% endblock %}

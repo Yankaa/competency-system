@@ -13,13 +13,15 @@ def render_table(view_competencies, added_competencies):
 
 def change_competency_func():
     form = request.form
-    type_ = form.get('type', 0, type=str)
+    request_type = form.get('type', 0, type=str)
     comp_id = form.get('comp_id', 0, type=int)
     user_id = get_current_user_id()
-    if type_ == 'append':
+    if request_type == 'append':
         append_comp_to_worker(user_id, comp_id)
-    elif type_ == 'remove':
+        return True
+    elif request_type == 'remove':
         remove_comp_from_worker(user_id, comp_id)
+        return False
 
 
 def load_table(blueprint, path):

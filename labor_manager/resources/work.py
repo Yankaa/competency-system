@@ -14,8 +14,8 @@ work_fields = {
 parser = reqparse.RequestParser()\
     .add_argument('description', type=str)\
     .add_argument('salary', type=int)\
-    .add_argument('employer', type=int)\
-    .add_argument('competencies', type=int, action='append')
+    .add_argument('employer_id', type=int, store_missing=False)\
+    .add_argument('competencies', type=int, action='append', default=[])
 
 
 class WorkList(Resource):
@@ -26,7 +26,7 @@ class WorkList(Resource):
     @marshal_with(work_fields)
     def post(self):
         args = parser.parse_args()
-        work = data.add_work(args.description, args.salary, args.employer, args.competencies)
+        work = data.add_work(args.description, args.salary, args.employer_id, args.competencies)
         return work
 
 
@@ -47,7 +47,15 @@ class BestWorks(Resource):
         return model.best_works(data.get_worker(worker_id))
 
 
+employer_work_fields = {
+    'id': fields.Integer,
+    'description': fields.String,
+    'salary': fields.Integer,
+    'competencies': fields.List(fields.Integer)
+}
+
+
 class EmployerWorks(Resource):
-    @marshal_with(work_fields)
+    @marshal_with(employer_work_fields)
     def get(self, employer_id: int):
         return data.employer_works(employer_id)

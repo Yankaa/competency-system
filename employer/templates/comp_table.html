@@ -1,10 +1,10 @@
-{% macro div_table(view_competencies, added_competencies, div_name='competencies_table') %}
+{% macro div_table(view_competencies, added_competencies, div_name='competencies_table', work_id=none) %}
 <div id="{{ div_name }}">
-    {{ table(view_competencies, added_competencies) }}
+    {{ table(view_competencies, added_competencies, work_id=work_id) }}
 </div>
 {% endmacro %}
 
-{% macro table(view_competencies, added_competencies, active=true) %}
+{% macro table(view_competencies, added_competencies, active=true, work_id=none) %}
 {% if view_competencies %}
 <table class="table table-striped table-hover">
     <thead>
@@ -17,13 +17,13 @@
         </tr>
     </thead>
     <tbody>
-        {% set added_competencies = added_competencies | to_set %}
+        {% if active %}{% set added_competencies = added_competencies | to_set %}{% endif %}
         {% for competency in view_competencies %}
         <tr>
-            <td><a href="{{ url_for('competency_page.competency', comp_id=competency.id) }}">{{ competency.name }}</a></td>
+            <td><a href="{{ url_for('competency_page.competency', comp_id=competency.id, work=work_id) }}">{{ competency.name }}</a></td>
             <td>
             <ul style="list-style-position: inside; padding-left: 0;">
-                {% for indicator in competency.indicators[:3] %}
+                {% for indicator in competency.indicators[:5] %}
                     <li>{{ indicator }}</li>
                 {% endfor %}
             </ul>
@@ -52,13 +52,13 @@
 {% endif %}
 {% endmacro %}
 
-{% macro table_changed(div_name='competencies_table') %}
+{% macro table_changed(work_id, div_name='competencies_table') %}
 <script>
     function change_competency(type, comp_id) {
         $.ajax({
             method: 'POST',
             url: '{{ request.path }}/change_competency',
-            data: {type: type, comp_id: comp_id}
+            data: {type: type, comp_id: comp_id, work_id: {{ work_id }}}
         }).done(function(data){
             $('#{{ div_name }}').html(data.table);
         });
