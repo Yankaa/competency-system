@@ -3,6 +3,7 @@ from flask_restful import Api
 from resources.competency import CompetencyList, Competency
 from resources.profession import ProfessionList, Profession
 from resources.area import AreaList, Area
+from resources.clusterizer import ClustersUpdate
 import data as data
 
 app = Flask(__name__)
@@ -19,6 +20,7 @@ api.add_resource(ProfessionList, '/professions')
 api.add_resource(Profession, '/professions/<int:prof_id>')
 api.add_resource(AreaList, '/areas')
 api.add_resource(Area, '/areas/<int:area_id>')
+api.add_resource(ClustersUpdate, '/clusters_update')
 
 
 if __name__ == '__main__':

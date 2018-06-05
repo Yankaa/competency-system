@@ -1,6 +1,6 @@
 from typing import List
 from parser import Standard
-from web import add_competency, add_profession, add_area
+from web import add_competency, add_profession, add_area, end_update
 import paths
 
 
@@ -22,3 +22,4 @@ def analyze(fresh_standards: List[str]):
     for standard_id in fresh_standards:
         standard: Standard = paths.parsed(standard_id).read_object()
         analyze_standard(standard)
+    end_update()

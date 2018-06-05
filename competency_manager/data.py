@@ -5,17 +5,19 @@ import semantic
 db = SQLAlchemy()
 
 
-class Competency(db.Model):
-    id: int = db.Column(db.Integer, primary_key=True)
-    name: str = db.Column(db.String, nullable=False)
-    vector = db.Column(db.PickleType)
-    indicators: str = db.Column(db.String, nullable=False)
-
-
 competency_profession = db.Table('competency_profession',
     db.Column('competency_id', db.Integer, db.ForeignKey('competency.id'), primary_key=True),
     db.Column('profession_id', db.Integer, db.ForeignKey('profession.id'), primary_key=True)
 )
+
+
+class Competency(db.Model):
+    id: int = db.Column(db.Integer, primary_key=True)
+    name: str = db.Column(db.String, nullable=False)
+    vector = db.Column(db.PickleType)
+    amount: int = db.Column(db.Integer)
+    indicators: str = db.Column(db.String, nullable=False)
+    professions: List = db.relationship('Profession', secondary=competency_profession, backref='competencies')
 
 
 class Area(db.Model):
@@ -122,3 +124,37 @@ def list_areas() -> List[Area]:
 def create_bd():
     db.drop_all()
     db.create_all()
+
+
+def merge_professions(cluster: List[Competency]):
+    # для избежания дубликатов, списки объединяются через словарь
+    professions = {profession.id: profession for competency in cluster for profession in competency.professions}
+    return list(professions.values())
+
+
+def cluster_union(cluster: List[Competency]) -> Competency:
+    names = []
+    indicators = []
+    professions = merge_professions(cluster)
+    for competency in cluster:
+        names.append(competency.name)
+        indicators.append(competency.indicators)
+        db.session.remove(competency)  # SQLAlchemy автоматически удаляет связанные записи из competency_profession
+    name = min(names, key=len)
+    indicators = '\n'.join(indicators)
+    competency = Competency(name=name, indicators=indicators, professions=professions)
+    db.session.add(competency)
+    return competency
+
+
+def append_to_cluster(old_competency: Competency, new_competency: Competency):
+    old_competency.indicators += '\n' + new_competency.indicators
+    old_competency.professions = merge_professions([old_competency, new_competency])
+    db.session.remove(new_competency)
+
+
+def clusters_update():
+    import semantic.clusterizer as clusterizer
+    competencies: List[Competency] = Competency.query.all()
+    clusterizer.clusters_update(competencies, cluster_union, append_to_cluster)
+    db.session.commit()
